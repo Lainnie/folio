@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE>
+<html>
+<head>
+    <title>Folio</title>
+    <link rel='stylesheet' type='text/css' href='{% static 'css/normalize.css' %}'></link>
+    <link rel='stylesheet' type='text/css' href='{% static 'lib/vegas/jquery.vegas.css' %}'></link>
+    <link rel='stylesheet' type='text/css' href='{% static 'css/style.css' %}'></link>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+<section id='page'>
+    {% include "header.html" %}
+    <div id='content'>
+        {% block content %}{% endblock %}
+    </div>
+    <div id='wrap_canvas'>
+        <canvas id='canvas' width='940' height='360'>Yours browser does not support canvas tag</canvas>
+    </div>
+</section>
+<script type='text/javascript' src='{% static 'js/jquery-2.0.3.min.js'%}'></script>
+<script type='text/javascript' src='{% static 'lib/vegas/jquery.vegas.js'%}'></script>
+<script type='text/javascript' src='{% static 'js/canvas.js'%}'></script>
+<script type='text/javascript' src='{% static 'js/script.js'%}'></script>
+{% block extra_js %}{% endblock %}
+</body>
