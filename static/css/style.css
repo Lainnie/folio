@@ -1,4 +1,5 @@
 html {
+	background:url(../img/1.jpg) no-repeat center fixed;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
@@ -6,7 +7,6 @@ html {
 	line-height: 40px;
 }
 html, body {
-	background:url(../img/sprites/Water Block.png) no-repeat center fixed;
 	margin:0;
 	padding:0;
 	height:100%;

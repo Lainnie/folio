@@ -78,6 +78,23 @@
     init = function(){
         context.clearRect(0, 0, canvas.width(), canvas.height());
         drawToCanvas();
+    },
+    moveornot = function(evt){
+        var key = evt.keyCode,
+        c = $('#wrap_canvas');
+
+        if (key === 37){
+            here.x -= sizeSprite;
+        }
+        else if (key === 38){
+            here.y -= sizeSprite - 40;
+        }
+        else if (key === 39){
+            here.x += sizeSprite;
+        }
+        else if (key === 40){
+            here.y += sizeSprite - 40;
+        }
     };
 
     scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
@@ -144,26 +161,17 @@
         var key = evt.keyCode,
         c = $('#wrap_canvas');
 
-        if (key === 37){
-            here.x -= sizeSprite;
-        }
-        else if (key === 38){
-            here.y -= sizeSprite - 40;
-        }
-        else if (key === 39){
-            here.x += sizeSprite;
-        }
-        else if (key === 40){
-            here.y += sizeSprite - 40;
-        }
-        else if (key === 13){
+        if (key === 13){
             if (c.css('display') === 'none'){
+                $(document).bind('keyup', moveornot);
                 gameLoop = setInterval(init);
             }else{
+                $(document).unbind('keyup', moveornot);
                 clearInterval(gameLoop);
             }
             c.fadeToggle('slow');
         }
     });
+    $(document).bind('keyup', moveornot);
 })();
 
