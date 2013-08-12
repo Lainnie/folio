@@ -133,6 +133,9 @@
     /**
     * Event handler
     */
+    /**
+    * creer function pour gerer les mouvements
+    */
     $('#wrap_canvas').css({ position: 'relative', top: $('#page').height() / 1.4 - canvas.height()});
     $(window).resize(function(){
         $('#wrap_canvas').css({ position: 'relative', top: $('#page').height() / 1.4 - canvas.height()});
