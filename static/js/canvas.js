@@ -42,7 +42,7 @@
     countLoad = function(){
         isLoad = isLoad - 1;
         if (isLoad === 0){
-            init();
+            setInterval(init, 1000 / 60);
         }
     },
     drawToCanvas = function(){
@@ -136,11 +136,6 @@
     $(window).resize(function(){
         $('#wrap_canvas').css({ position: 'relative', top: $('#page').height() / 1.4 - canvas.height()});
     });
-    $('#wrap_canvas').click(function(evt){
-        context.clearRect(0, 0, canvas.width(), canvas.height());
-        here.x += sizeSprite;
-        drawToCanvas();
-    });
     $(document).keyup(function(evt){
         var key = evt.keyCode;
 
@@ -156,7 +151,6 @@
         else if (key === 40){
             here.y += sizeSprite - 40;
         }
-        init();
     });
 })();
 
