@@ -1,5 +1,6 @@
 *.log
 *.pot
 *.pyc
+*.swo
 local_settings.py
 venv

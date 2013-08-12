@@ -11,4 +11,4 @@
   	})('overlay', {
     	src:'static/lib/vegas/overlays/15.png'
   	});
-})();
+});

@@ -1,5 +1,4 @@
 html {
-	background:url(../img/3.jpg) no-repeat center fixed;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
@@ -7,6 +6,7 @@ html {
 	line-height: 40px;
 }
 html, body {
+	background:url(../img/sprites/Water Block.png) no-repeat center fixed;
 	margin:0;
 	padding:0;
 	height:100%;
@@ -16,7 +16,6 @@ html, body {
 	position:relative;
 }
 #content {
-	padding-bottom:81px;
 }
 #footer {
 	position:absolute;
@@ -31,10 +30,10 @@ html, body {
 }
 #header {
 	min-height: 40px;
-	background-color: #3a3a3a;
+	background-color: #986b4b;
 	color:#ffffff;
 	border-bottom:1px solid #000;
-	opacity: 0.6;
+	opacity: 1;
 }
 #header:hover {
 	opacity:1;
@@ -61,21 +60,24 @@ html, body {
 	text-align:center;
 }
 #canvas{
-    border:1px solid black;
     margin:auto;
     display:block;
 }
 #wrap_canvas {
     width:100%;
+    opacity:1;
+}
+#wrap_canvas:hover {
+    opacity: 1;
 }
 .clear {
 	clear:both;
 }
 .touch {
-	color:#f66c00;
+	color:#5fc148;
 }
 .separator {
 	height:40px;
-	border-right:1px solid #f66c00;
+	border-right:1px solid #5fc148;
 	display:inline;
 }
