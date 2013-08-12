@@ -11,13 +11,21 @@
     x,
     y,
     len,
+    lenw,
     row,
     count,
     gameLoop,
     space,
     scene                       = [],
     scenes                      = [],
+    gameobject                  =   {
+                                    'name': null,
+                                    'type': null,
+                                    'position': null
+                                },
+    gametab                     = {},
     here                        = { 'x': 0, 'y': canvasHeight - 120},
+    limit                       = {'xmin': 0, 'xmax': canvas.width() - 80, 'ymin': -40, 'ymax': 240},
     images                      = {
             'me':               new Image(),
             'plainblock':       new Image(),
@@ -62,9 +70,11 @@
             for (x = 0, len = scene[y].length, space = 0; x < len; x = x + 1, space = space + sizeSprite){
                 if (scene[y][x] !== undefined && scene[y][x] !== ''){
                     context.drawImage(images[scene[y][x]], space, canvasHeight - spritePos, sizeSprite, sizeSprite);
+                    gametab[canvasHeight - spritePos][space] = 'decor';
                 }
             }
         }
+        gametab[here.y][here.x] = 'perso';
         context.drawImage(images.me, here.x, here.y, sizeSprite, sizeSprite);
         scene = scenes[1];
         for (y = 0, row = scene.length, spritePos = canvasHeight + 80; y < row; y = y + 1, spritePos = spritePos - 40){
@@ -83,18 +93,20 @@
         var key = evt.keyCode,
         c = $('#wrap_canvas');
 
-        if (key === 37){
+        gametab[here.y][here.x] = 1;
+        if (key === 37 && here.x > limit.xmin && gametab[here.y][here.x - sizeSprite] !== 'decor'){
             here.x -= sizeSprite;
         }
-        else if (key === 38){
+        else if (key === 38 && here.y > limit.ymin && gametab[here.y - 40][here.x] !== 'decor'){
             here.y -= sizeSprite - 40;
         }
-        else if (key === 39){
+        else if (key === 39 && here.x < limit.xmax && gametab[here.y][here.x + sizeSprite] !== 'decor'){
             here.x += sizeSprite;
         }
-        else if (key === 40){
+        else if (key === 40 && here.y < limit.ymax && gametab[here.y + 40][here.x] !== 'decor'){
             here.y += sizeSprite - 40;
         }
+        gametab[here.y][here.x] = 'perso';
     };
 
     scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
@@ -106,6 +118,13 @@
     scene.push(['', '', '', '', 'treeshort', '', 'treeshort', '', '', '', '', '', '', '']);
     scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
     scenes.push(scene);
+
+    for (y = limit.ymin, len = limit.ymax; y <= len; y = y + 40){
+        gametab[y] = {};
+        for (x = limit.xmin, lenw = limit.xmax; x <= lenw; x = x + 80){
+            gametab[y][x] = 1;
+        }
+    }
     scene = [];
 
     scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
@@ -149,9 +168,6 @@
     context.canvas.width        = sizeSprite * scene[0].length;
     /**
     * Event handler
-    */
-    /**
-    * creer function pour gerer les mouvements
     */
     $('#wrap_canvas').css({ position: 'relative', top: $('#page').height() / 1.4 - canvas.height()});
     $(window).resize(function(){
