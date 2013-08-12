@@ -13,6 +13,7 @@
     len,
     row,
     count,
+    gameLoop,
     space,
     scene                       = [],
     scenes                      = [],
@@ -42,7 +43,7 @@
     countLoad = function(){
         isLoad = isLoad - 1;
         if (isLoad === 0){
-            setInterval(init, 1000 / 60);
+            gameLoop = setInterval(init, 1000 / 60);
         }
     },
     drawToCanvas = function(){
@@ -137,7 +138,8 @@
         $('#wrap_canvas').css({ position: 'relative', top: $('#page').height() / 1.4 - canvas.height()});
     });
     $(document).keyup(function(evt){
-        var key = evt.keyCode;
+        var key = evt.keyCode,
+        c = $('#wrap_canvas');
 
         if (key === 37){
             here.x -= sizeSprite;
@@ -150,6 +152,14 @@
         }
         else if (key === 40){
             here.y += sizeSprite - 40;
+        }
+        else if (key === 13){
+            if (c.css('display') === 'none'){
+                gameLoop = setInterval(init);
+            }else{
+                clearInterval(gameLoop);
+            }
+            c.fadeToggle('slow');
         }
     });
 })();
