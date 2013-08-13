@@ -111,8 +111,7 @@
     moveornot = function(evt){
         var key = evt.keyCode,
         c = $('#wrap_canvas');
-
-        gametab[me.where.y][me.x] = 1;
+        gametab[me.where.y][me.where.x] = 1;
         if (key === 37 && me.where.x > limit.xmin && gametab[me.where.y][me.where.x - sizeSprite] !== 'decor'){
             me.where.x -= sizeSprite;
         }
@@ -124,6 +123,11 @@
         }
         else if (key === 40 && me.where.y < limit.ymax && gametab[me.where.y + 40][me.where.x] !== 'decor'){
             me.where.y += sizeSprite - 40;
+        }
+        if (gametab[me.where.y][me.where.x] === 'link'){
+            setTimeout(function(){
+                me.where.y += sizeSprite - 40;
+            }, 100);
         }
         gametab[me.where.y][me.where.x] = 'perso';
     };
@@ -161,11 +165,11 @@
     scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
     scene.push(['', '', '', '', '', '', '',
                 makego('windowtall', 'decor', {image: images.windowtall}),
-                makego('doortallclosed', 'decor', {image: images.doortallclosed}),
+                makego('doortallclosed', 'link', {image: images.doortallclosed}),
                 makego('windowtall', 'decor', {image: images.windowtall}), '', '', '', '']);
     scene.push([
                 makego('windowtall', 'decor', {image: images.windowtall}),
-                makego('doortallclosed', 'decor', {image: images.doortallclosed}),
+                makego('doortallclosed', 'link', {image: images.doortallclosed}),
                 makego('windowtall', 'decor', {image: images.windowtall}), '', '', '', '',
                 makego('treeshort', 'decor', {image: images.treeshort}), '',
                 makego('treeshort', 'decor', {image: images.treeshort}), '', '', '', '']);
@@ -173,11 +177,11 @@
                 makego('treeshort', 'decor', {image: images.treeshort}), '',
                 makego('treeshort', 'decor', {image: images.treeshort}), '', '', '', '', '', '', '', '',
                 makego('windowtall', 'decor', {image: images.windowtall}),
-                makego('doortallclosed', 'decor', {image: images.doortallclosed}),
+                makego('doortallclosed', 'link', {image: images.doortallclosed}),
                 makego('windowtall', 'decor', {image: images.windowtall})]);
     scene.push(['', '', '', '',
                 makego('windowtall', 'decor', {image: images.windowtall}),
-                makego('doortallclosed', 'decor', {image: images.doortallclosed}),
+                makego('doortallclosed', 'link', {image: images.doortallclosed}),
                 makego('windowtall', 'decor', {image: images.windowtall}), '', '', '', '',
                 makego('treeshort', 'decor', {image: images.treeshort}), '',
                 makego('treeshort', 'decor', {image: images.treeshort})]);
