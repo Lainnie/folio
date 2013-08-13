@@ -18,11 +18,6 @@
     space,
     scene                       = [],
     scenes                      = [],
-    gameobject                  =   {
-                                    'name': null,
-                                    'type': null,
-                                    'position': null
-                                },
     gametab                     = {},
     here                        = { 'x': 0, 'y': canvasHeight - 120},
     limit                       = {'xmin': 0, 'xmax': canvas.width() - 80, 'ymin': -40, 'ymax': 240},
@@ -40,7 +35,26 @@
             'roofsouth':        new Image(),
             'grassblock':       new Image()
         },
-    isLoad = (function(){
+    types                       = {
+            'decor':            'decor',
+            'mob':              'mob',
+            'me':               'me'
+    }
+    gameobjects                 = {
+    },
+    Gameobject                  =   function(name, type, image){
+                                    this.name   = name,
+                                    this.type   = type,
+                                    this.image  = image,
+                                    this.where  = {
+                                        'x': null,
+                                        'y': null
+                                    }
+                                },
+    makego      = function(name, type, image){
+        return new Gameobject(name, type, image);
+    },
+    isLoad      = (function(){
         var i,
         count = 0;
         for (i in images){
@@ -48,7 +62,7 @@
         }
         return count;
     })(),
-    countLoad = function(){
+    countLoad   = function(){
         isLoad = isLoad - 1;
         if (isLoad === 0){
             gameLoop = setInterval(init, 1000 / 60);
@@ -75,7 +89,7 @@
             }
         }
         gametab[here.y][here.x] = 'perso';
-        context.drawImage(images.me, here.x, here.y, sizeSprite, sizeSprite);
+        context.drawImage(test.image, here.x, here.y, sizeSprite, sizeSprite);
         scene = scenes[1];
         for (y = 0, row = scene.length, spritePos = canvasHeight + 80; y < row; y = y + 1, spritePos = spritePos - 40){
             for (x = 0, len = scene[y].length, space = 0; x < len; x = x + 1, space = space + sizeSprite){
@@ -166,6 +180,8 @@
     images.windowtall.src       = 'static/img/sprites/Window Tall.png';
     images.windowtall.onload    = countLoad;
     context.canvas.width        = sizeSprite * scene[0].length;
+    var test = makego('lainnie', 'me', images.me);
+    console.log(test);
     /**
     * Event handler
     */
