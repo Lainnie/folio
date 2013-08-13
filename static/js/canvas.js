@@ -42,13 +42,15 @@
     }
     gameobjects                 = {
     },
-    Gameobject                  =   function(name, type, image){
+    Gameobject                  =   function(name, type, context){
+                                    context.x           = typeof context.x !== 'undefined' ? context.x : null;
+                                    context.y           = typeof context.y !== 'undefined' ? context.y : null;
                                     this.name   = name,
                                     this.type   = type,
-                                    this.image  = image,
+                                    this.image  = context.image,
                                     this.where  = {
-                                        'x': null,
-                                        'y': null
+                                        'x': context.x,
+                                        'y': context.y
                                     }
                                 },
     makego      = function(name, type, image){
@@ -83,18 +85,20 @@
         for (y = 0, row = scene.length, spritePos = canvasHeight + 40; y < row; y = y + 1, spritePos = spritePos - 40){
             for (x = 0, len = scene[y].length, space = 0; x < len; x = x + 1, space = space + sizeSprite){
                 if (scene[y][x] !== undefined && scene[y][x] !== ''){
-                    context.drawImage(images[scene[y][x]], space, canvasHeight - spritePos, sizeSprite, sizeSprite);
-                    gametab[canvasHeight - spritePos][space] = 'decor';
+                    if (scene[y][x].where.x !== null){
+                        context.drawImage(scene[y][x].image, scene[y][x].where.x, scene[y][x].where.y, sizeSprite, sizeSprite);
+                    }else{
+                        context.drawImage(scene[y][x].image, space, canvasHeight - spritePos, sizeSprite, sizeSprite);
+                    }
+                    gametab[canvasHeight - spritePos][space] = scene[y][x].type;
                 }
             }
         }
-        gametab[here.y][here.x] = 'perso';
-        context.drawImage(test.image, here.x, here.y, sizeSprite, sizeSprite);
         scene = scenes[1];
         for (y = 0, row = scene.length, spritePos = canvasHeight + 80; y < row; y = y + 1, spritePos = spritePos - 40){
             for (x = 0, len = scene[y].length, space = 0; x < len; x = x + 1, space = space + sizeSprite){
                 if (scene[y][x] !== undefined && scene[y][x] !== ''){
-                    context.drawImage(images[scene[y][x]], space, canvasHeight - spritePos, sizeSprite, sizeSprite);
+                    context.drawImage(scene[y][x].image, space, canvasHeight - spritePos, sizeSprite, sizeSprite);
                 }
             }
         }
@@ -122,34 +126,6 @@
         }
         gametab[here.y][here.x] = 'perso';
     };
-
-    scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
-    scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
-    scene.push(['', '', '', '', '', '', '', 'windowtall', 'doortallclosed', 'windowtall', '', '', '', '']);
-    scene.push(['windowtall', 'doortallclosed', 'windowtall', '', '', '', '', 'treeshort', '', 'treeshort', '', '', '', '']);
-    scene.push(['treeshort', '', 'treeshort', '', '', '', '', '', '', '', '', 'windowtall', 'doortallclosed', 'windowtall']);
-    scene.push(['', '', '', '', 'windowtall', 'doortallclosed', 'windowtall', '', '', '', '', 'treeshort', '', 'treeshort']);
-    scene.push(['', '', '', '', 'treeshort', '', 'treeshort', '', '', '', '', '', '', '']);
-    scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
-    scenes.push(scene);
-
-    for (y = limit.ymin, len = limit.ymax; y <= len; y = y + 40){
-        gametab[y] = {};
-        for (x = limit.xmin, lenw = limit.xmax; x <= lenw; x = x + 80){
-            gametab[y][x] = 1;
-        }
-    }
-    scene = [];
-
-    scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
-    scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
-    scene.push(['', '', '', '', '', '', '', 'roofsouthwest', 'roofsouth', 'roofsoutheast', '', '', '', '']);
-    scene.push(['roofsouthwest', 'roofsouth', 'roofsoutheast', '', '', '', '', '', '', '', '', '', '', '']);
-    scene.push(['', '', '', '', '', '', '', '', '', '', '', 'roofsouthwest', 'roofsouth', 'roofsoutheast']);
-    scene.push(['', '', '', '', 'roofsouthwest', 'roofsouth', 'roofsoutheast', '', '', '', '', '', '', '']);
-    scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
-    scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
-    scenes.push(scene);
 
     /**
     * Init image
@@ -179,9 +155,68 @@
     images.doortallopen.onload  = countLoad;
     images.windowtall.src       = 'static/img/sprites/Window Tall.png';
     images.windowtall.onload    = countLoad;
+
+    scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
+    scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
+    scene.push(['', '', '', '', '', '', '',
+                makego('windowtall', 'decor', {image: images.windowtall}),
+                makego('doortallclosed', 'decor', {image: images.doortallclosed}),
+                makego('windowtall', 'decor', {image: images.windowtall}), '', '', '', '']);
+    scene.push([
+                makego('windowtall', 'decor', {image: images.windowtall}),
+                makego('doortallclosed', 'decor', {image: images.doortallclosed}),
+                makego('windowtall', 'decor', {image: images.windowtall}), '', '', '', '',
+                makego('treeshort', 'decor', {image: images.treeshort}), '',
+                makego('treeshort', 'decor', {image: images.treeshort}), '', '', '', '']);
+    scene.push([
+                makego('treeshort', 'decor', {image: images.treeshort}), '',
+                makego('treeshort', 'decor', {image: images.treeshort}), '', '', '', '', '', '', '', '',
+                makego('windowtall', 'decor', {image: images.windowtall}),
+                makego('doortallclosed', 'decor', {image: images.doortallclosed}),
+                makego('windowtall', 'decor', {image: images.windowtall})]);
+    scene.push(['', '', '', '',
+                makego('windowtall', 'decor', {image: images.windowtall}),
+                makego('doortallclosed', 'decor', {image: images.doortallclosed}),
+                makego('windowtall', 'decor', {image: images.windowtall}), '', '', '', '',
+                makego('treeshort', 'decor', {image: images.treeshort}), '',
+                makego('treeshort', 'decor', {image: images.treeshort})]);
+    scene.push(['', '', '', '',
+                makego('treeshort', 'decor', {image: images.treeshort}), '',
+                makego('treeshort', 'decor', {image: images.treeshort}), '', '', '', '', '', '', '']);
+    scene.push([
+                makego('lainnie', 'me', {image:images.me, x:80, y:canvasHeight - 120}), '', '', '', '', '', '', '', '', '', '', '', '', '']);
+    scenes.push(scene);
+    for (y = limit.ymin, len = limit.ymax; y <= len; y = y + 40){
+        gametab[y] = {};
+        for (x = limit.xmin, lenw = limit.xmax; x <= lenw; x = x + 80){
+            gametab[y][x] = 1;
+        }
+    }
+    scene = [];
+
+    scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
+    scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
+    scene.push(['', '', '', '', '', '', '',
+                makego('roofsouthwest', 'decor', {image: images.roofsouthwest}),
+                makego('roofsouth', 'decor', {image: images.roofsouth}),
+                makego('roofsoutheast', 'decor', {image: images.roofsoutheast}), '', '', '', '']);
+    scene.push([
+                makego('roofsouthwest', 'decor', {image: images.roofsouthwest}),
+                makego('roofsouth', 'decor', {image: images.roofsouth}),
+                makego('roofsoutheast', 'decor', {image: images.roofsoutheast}), '', '', '', '', '', '', '', '', '', '', '']);
+    scene.push(['', '', '', '', '', '', '', '', '', '', '',
+                makego('roofsouthwest', 'decor', {image: images.roofsouthwest}),
+                makego('roofsouth', 'decor', {image: images.roofsouth}),
+                makego('roofsoutheast', 'decor', {image: images.roofsoutheast})]);
+    scene.push(['', '', '', '',
+                makego('roofsouthwest', 'decor', {image: images.roofsouthwest}),
+                makego('roofsouth', 'decor', {image: images.roofsouth}),
+                makego('roofsoutheast', 'decor', {image: images.roofsoutheast}), '', '', '', '', '', '', '']);
+    scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
+    scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
+    scenes.push(scene);
+
     context.canvas.width        = sizeSprite * scene[0].length;
-    var test = makego('lainnie', 'me', images.me);
-    console.log(test);
     /**
     * Event handler
     */
