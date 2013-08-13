@@ -16,6 +16,7 @@
     count,
     gameLoop,
     space,
+    me,
     scene                       = [],
     scenes                      = [],
     gametab                     = {},
@@ -111,20 +112,20 @@
         var key = evt.keyCode,
         c = $('#wrap_canvas');
 
-        gametab[here.y][here.x] = 1;
-        if (key === 37 && here.x > limit.xmin && gametab[here.y][here.x - sizeSprite] !== 'decor'){
-            here.x -= sizeSprite;
+        gametab[me.where.y][me.x] = 1;
+        if (key === 37 && me.where.x > limit.xmin && gametab[me.where.y][me.where.x - sizeSprite] !== 'decor'){
+            me.where.x -= sizeSprite;
         }
-        else if (key === 38 && here.y > limit.ymin && gametab[here.y - 40][here.x] !== 'decor'){
-            here.y -= sizeSprite - 40;
+        else if (key === 38 && me.where.y > limit.ymin && gametab[me.where.y - 40][me.where.x] !== 'decor'){
+            me.where.y -= sizeSprite - 40;
         }
-        else if (key === 39 && here.x < limit.xmax && gametab[here.y][here.x + sizeSprite] !== 'decor'){
-            here.x += sizeSprite;
+        else if (key === 39 && me.where.x < limit.xmax && gametab[me.where.y][me.where.x + sizeSprite] !== 'decor'){
+            me.where.x += sizeSprite;
         }
-        else if (key === 40 && here.y < limit.ymax && gametab[here.y + 40][here.x] !== 'decor'){
-            here.y += sizeSprite - 40;
+        else if (key === 40 && me.where.y < limit.ymax && gametab[me.where.y + 40][me.where.x] !== 'decor'){
+            me.where.y += sizeSprite - 40;
         }
-        gametab[here.y][here.x] = 'perso';
+        gametab[me.where.y][me.where.x] = 'perso';
     };
 
     /**
@@ -155,7 +156,7 @@
     images.doortallopen.onload  = countLoad;
     images.windowtall.src       = 'static/img/sprites/Window Tall.png';
     images.windowtall.onload    = countLoad;
-
+    me = makego('lainnie', 'me', {image:images.me, x:0, y:canvasHeight - 120});
     scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
     scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
     scene.push(['', '', '', '', '', '', '',
@@ -184,7 +185,7 @@
                 makego('treeshort', 'decor', {image: images.treeshort}), '',
                 makego('treeshort', 'decor', {image: images.treeshort}), '', '', '', '', '', '', '']);
     scene.push([
-                makego('lainnie', 'me', {image:images.me, x:80, y:canvasHeight - 120}), '', '', '', '', '', '', '', '', '', '', '', '', '']);
+                me, '', '', '', '', '', '', '', '', '', '', '', '', '']);
     scenes.push(scene);
     for (y = limit.ymin, len = limit.ymax; y <= len; y = y + 40){
         gametab[y] = {};
