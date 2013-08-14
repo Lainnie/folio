@@ -21,6 +21,17 @@ html, body {
 	position:relative;
     display:none;
 }
+#notif{
+    width:450px;
+    height:40px;
+    position:absolute;
+    top:80px;
+    padding:10px;
+    color:white;
+    background-color:#ff0000;
+    z-index:2;
+    border-style:none;
+}
 #content {
 }
 #footer {
