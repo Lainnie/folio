@@ -24,12 +24,16 @@
     limit                       = {'xmin': 0, 'xmax': canvas.width() - 80, 'ymin': -40, 'ymax': 240},
     images                      = {
             'me':               new Image(),
+            'selector':         new Image(),
+            'rock':             new Image(),
             'plainblock':       new Image(),
             'dirtblock':        new Image(),
             'doortallclosed':   new Image(),
             'doortallopen':     new Image(),
             'windowtall':       new Image(),
             'treeshort':        new Image(),
+            'treeugly':         new Image(),
+            'treetall':         new Image(),
             'wallblocktall':    new Image(),
             'roofsouthwest':    new Image(),
             'roofsoutheast':    new Image(),
@@ -54,6 +58,9 @@
                                         'y': context.y
                                     }
                                 },
+    resize      = (function(){
+        $('#canvas').css({ position: 'relative', top: $(document).height() / 1.4 - canvas.height()});
+    });
     makego      = function(name, type, image){
         return new Gameobject(name, type, image);
     },
@@ -116,6 +123,7 @@
             me.where.x -= sizeSprite;
         }
         else if (key === 38 && me.where.y > limit.ymin && gametab[me.where.y - 40][me.where.x] !== 'decor'){
+
             me.where.y -= sizeSprite - 40;
         }
         else if (key === 39 && me.where.x < limit.xmax && gametab[me.where.y][me.where.x + sizeSprite] !== 'decor'){
@@ -126,10 +134,14 @@
         }
         if (gametab[me.where.y][me.where.x] === 'link'){
             setTimeout(function(){
+                init();
                 me.where.y += sizeSprite - 40;
+                alert('Voulez vous allez sur la page blablabla ?');
+                init();
             }, 100);
         }
         gametab[me.where.y][me.where.x] = 'perso';
+        init();
     };
 
     /**
@@ -138,6 +150,10 @@
     images.me.src               = 'static/img/sprites/Boy.png';
     images.me.onload            = countLoad;
     images.me.id                = 'me';
+    images.rock.src             = 'static/img/sprites/Rock.png';
+    images.rock.onload          = countLoad;
+    images.selector.src         = 'static/img/sprites/Selector.png';
+    images.selector.onload      = countLoad;
     images.grassblock.src       = 'static/img/sprites/Grass Block.png';
     images.grassblock.onload    = countLoad;
     images.roofsoutheast.src    = 'static/img/sprites/Roof South East.png';
@@ -148,6 +164,10 @@
     images.roofsouthwest.onload = countLoad;
     images.treeshort.src        = 'static/img/sprites/Tree Short.png';
     images.treeshort.onload     = countLoad;
+    images.treeugly.src        = 'static/img/sprites/Tree Ugly.png';
+    images.treeugly.onload     = countLoad;
+    images.treetall.src         = 'static/img/sprites/Tree Tall.png';
+    images.treetall.onload      = countLoad;
     images.plainblock.src       = 'static/img/sprites/Plain Block.png';
     images.plainblock.onload    = countLoad;
     images.dirtblock.src        = 'static/img/sprites/Dirt Block.png';
@@ -160,36 +180,36 @@
     images.doortallopen.onload  = countLoad;
     images.windowtall.src       = 'static/img/sprites/Window Tall.png';
     images.windowtall.onload    = countLoad;
+
     me = makego('lainnie', 'me', {image:images.me, x:0, y:canvasHeight - 120});
     scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
-    scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
+    scene.push(['', '', '',
+                makego('rock', 'decor', {image: images.rock}), '', '', '', '', '', '', '', '', '', '']);
     scene.push(['', '', '', '', '', '', '',
                 makego('windowtall', 'decor', {image: images.windowtall}),
-                makego('doortallclosed', 'link', {image: images.doortallclosed}),
+                makego('selector', 'link', {image: images.selector}),
                 makego('windowtall', 'decor', {image: images.windowtall}), '', '', '', '']);
     scene.push([
                 makego('windowtall', 'decor', {image: images.windowtall}),
-                makego('doortallclosed', 'link', {image: images.doortallclosed}),
+                makego('selector', 'link', {image: images.selector}),
                 makego('windowtall', 'decor', {image: images.windowtall}), '', '', '', '',
-                makego('treeshort', 'decor', {image: images.treeshort}), '',
-                makego('treeshort', 'decor', {image: images.treeshort}), '', '', '', '']);
+                makego('treetall', 'decor', {image: images.treetall}), '',
+                makego('treetall', 'decor', {image: images.treetall}), '', '', '', '']);
     scene.push([
-                makego('treeshort', 'decor', {image: images.treeshort}), '',
-                makego('treeshort', 'decor', {image: images.treeshort}), '', '', '', '', '', '', '', '',
+                makego('treeugly', 'decor', {image: images.treeugly}), '',
+                makego('treeugly', 'decor', {image: images.treeugly}), '', '', '', '', '', '', '', '',
                 makego('windowtall', 'decor', {image: images.windowtall}),
-                makego('doortallclosed', 'link', {image: images.doortallclosed}),
+                makego('selector', 'link', {image: images.selector}),
                 makego('windowtall', 'decor', {image: images.windowtall})]);
     scene.push(['', '', '', '',
                 makego('windowtall', 'decor', {image: images.windowtall}),
-                makego('doortallclosed', 'link', {image: images.doortallclosed}),
-                makego('windowtall', 'decor', {image: images.windowtall}), '', '', '', '',
+                makego('selector', 'link', {image: images.selector}),
+                makego('windowtall', 'decor', {image: images.windowtall}), '', makego('rock', 'decor', {image: images.rock}), '', '',
                 makego('treeshort', 'decor', {image: images.treeshort}), '',
                 makego('treeshort', 'decor', {image: images.treeshort})]);
-    scene.push(['', '', '', '',
-                makego('treeshort', 'decor', {image: images.treeshort}), '',
-                makego('treeshort', 'decor', {image: images.treeshort}), '', '', '', '', '', '', '']);
+    scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
     scene.push([
-                me, '', '', '', '', '', '', '', '', '', '', '', '', '']);
+                me, '', '', '', '', '', '', '', '', '', makego('rock', 'decor', {image: images.rock}), '', '', '']);
     scenes.push(scene);
     for (y = limit.ymin, len = limit.ymax; y <= len; y = y + 40){
         gametab[y] = {};
@@ -207,7 +227,7 @@
                 makego('roofsoutheast', 'decor', {image: images.roofsoutheast}), '', '', '', '']);
     scene.push([
                 makego('roofsouthwest', 'decor', {image: images.roofsouthwest}),
-                makego('roofsouth', 'decor', {image: images.roofsouth}),
+                '',
                 makego('roofsoutheast', 'decor', {image: images.roofsoutheast}), '', '', '', '', '', '', '', '', '', '', '']);
     scene.push(['', '', '', '', '', '', '', '', '', '', '',
                 makego('roofsouthwest', 'decor', {image: images.roofsouthwest}),
@@ -222,28 +242,35 @@
     scenes.push(scene);
 
     context.canvas.width        = sizeSprite * scene[0].length;
+    $('#canvas').css({ position: 'relative', top: $(document).height() / 1.4 - canvas.height()});
     /**
     * Event handler
     */
-    $('#wrap_canvas').css({ position: 'relative', top: $('#page').height() / 1.4 - canvas.height()});
-    $(window).resize(function(){
-        $('#wrap_canvas').css({ position: 'relative', top: $('#page').height() / 1.4 - canvas.height()});
-    });
     $(document).keyup(function(evt){
         var key = evt.keyCode,
-        c = $('#wrap_canvas');
+        speed = 'fast',
+        ca = $('#wrap_canvas'),
+        co = $('#page');
 
         if (key === 13){
-            if (c.css('display') === 'none'){
+            if (ca.css('display') === 'none'){
                 $(document).bind('keyup', moveornot);
+                $(window).bind('resize', resize);
                 gameLoop = setInterval(init);
+                co.fadeToggle(speed, function(){
+                ca.fadeToggle(speed);
+            });
             }else{
                 $(document).unbind('keyup', moveornot);
+                $(window).unbind('resize', resize);
                 clearInterval(gameLoop);
+                ca.fadeToggle(speed, function(){
+                co.fadeToggle(speed);
+            });
             }
-            c.fadeToggle('slow');
         }
     });
     $(document).bind('keyup', moveornot);
+    $(window).bind('resize', resize);
 })();
 

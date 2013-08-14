@@ -10,14 +10,14 @@
 </head>
 <body>
 <section id='page'>
-    {% include "header.html" %}
     <div id='content'>
         {% block content %}{% endblock %}
     </div>
-    <div id='wrap_canvas'>
-        <canvas id='canvas' width='1120' height='360'>Yours browser does not support canvas tag</canvas>
-    </div>
 </section>
+<div id='wrap_canvas'>
+    {% include "header.html" %}
+    <canvas id='canvas' width='1120' height='360'>Yours browser does not support canvas tag</canvas>
+</div>
 <script type='text/javascript' src='{% static 'js/jquery-2.0.3.min.js'%}'></script>
 <script type='text/javascript' src='{% static 'lib/vegas/jquery.vegas.js'%}'></script>
 <script type='text/javascript' src='{% static 'js/canvas.js'%}'></script>
