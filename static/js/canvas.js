@@ -120,7 +120,6 @@
         drawToCanvas();
     },
     isLink = function(){
-console.log(gametab[me.where.y][me.where.x] instanceof Gameobject);
         if(gametab[me.where.y][me.where.x] &&  gametab[me.where.y][me.where.x] instanceof Gameobject && gametab[me.where.y][me.where.x].type === 'link'){
             setTimeout(function(){
                 var url = gametab[me.where.y][me.where.x].url;
