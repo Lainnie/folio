@@ -15,5 +15,5 @@
 
     setTimeout(function(){
         $('#notif').fadeOut('slow');
-    }, 4000);
+    }, 3000);
 })();
