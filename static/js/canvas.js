@@ -17,7 +17,9 @@
     gameLoop,
     space,
     me,
-    speedMove                   = 2,
+    inmove = false,
+    speedMove                   = 4,
+    frame                       = 1000 / 60,
     scene                       = [],
     scenes                      = [],
     gametab                     = {},
@@ -79,7 +81,7 @@
     countLoad   = function(){
         isLoad = isLoad - 1;
         if (isLoad === 0){
-            gameLoop = setInterval(init, 1000 / 60);
+            gameLoop = setInterval(init, frame);
         }
     },
     drawToCanvas = function(){
@@ -127,51 +129,69 @@
                 me.where.y += sizeSprite - 40;
                 console.log('Voulez vous aller sur la page ' + url + ' ?');
                 init();
-            }, 100);
+            }, frame);
         }
 
     },
     moveornot = function(evt){
         var key = evt.keyCode,
+        move = null,
+        stop = 0,
+        block = 20;
         c = $('#wrap_canvas');
         gametab[me.where.y][me.where.x] = 1;
+        if (inmove === true) { return false; }
         if (key === 37 && me.where.x > limit.xmin && gametab[me.where.y][me.where.x - sizeSprite].type !== 'decor'){
-            for (i = 0; i < sizeSprite; i = i + speedMove){
-                setTimeout(function(){
-                    me.where.x -= speedMove;
-                    init();
-                    isLink();
-                }, 10);
-
-            }
+            inmove = true;
+            move = setInterval(function(){
+                me.where.x -= speedMove;
+                init();
+                isLink();
+                stop = stop + 1;
+                if (stop >= block){
+                    clearInterval(move);
+                    inmove = false;
+                }
+            }, frame);
         }
         else if (key === 38 && me.where.y > limit.ymin && gametab[me.where.y - 40][me.where.x].type !== 'decor'){
-            for (i = 0; i < sizeSprite - 40; i = i + speedMove / 2){
-                setTimeout(function(){
-                    me.where.y -= speedMove / 2;
-                    init();
-                    isLink();
-                }, 10);
-
-            }
+            inmove = true;
+            move = setInterval(function(){
+                me.where.y -= speedMove / 2;
+                init();
+                isLink();
+                stop = stop + 1;
+                if (stop >= block){
+                    clearInterval(move);
+                    inmove = false;
+                }
+            }, frame);
         }
         else if (key === 39 && me.where.x < limit.xmax && gametab[me.where.y][me.where.x + sizeSprite].type !== 'decor'){
-            for (i = 0; i < sizeSprite; i = i + speedMove){
-                setTimeout(function(){
-                    me.where.x += speedMove;
-                    init();
-                    isLink();
-                }, 10);
-            }
+            inmove = true;
+            move = setInterval(function(){
+                me.where.x += speedMove;
+                init();
+                isLink();
+                stop = stop + 1;
+                if (stop >= block){
+                    clearInterval(move);
+                    inmove = false;
+                }
+            }, frame);
         }
         else if (key === 40 && me.where.y < limit.ymax && gametab[me.where.y + 40][me.where.x].type !== 'decor'){
-            for (i = 0; i < sizeSprite -40; i = i + speedMove / 2){
-                setTimeout(function(){
-                    me.where.y += speedMove / 2;
-                    init();
-                    isLink();
-                }, 10);
-            }
+            inmove = true;
+            move = setInterval(function(){
+                me.where.y += speedMove / 2;
+                init();
+                isLink();
+                stop = stop + 1;
+                if (stop >= block){
+                    clearInterval(move);
+                    inmove = false;
+                }
+            }, frame);
         }
         gametab[me.where.y][me.where.x] = me;
         init();
@@ -216,7 +236,14 @@
     images.windowtall.src       = 'static/img/sprites/Window Tall.png';
     images.windowtall.onload    = countLoad;
 
+    /**
+     * Create Perso
+     */
     me = makego('lainnie', 'me', {image:images.me, x:0, y:canvasHeight - 120});
+
+    /**
+     * Create Scene
+     */
     scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
     scene.push(['', '', '',
                 makego('rock', 'decor', {image: images.rock}),
