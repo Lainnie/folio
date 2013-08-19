@@ -23,6 +23,7 @@
     scene                       = [],
     scenes                      = [],
     mobs                        = [],
+    entities                    = [],
     gametab                     = {},
     here                        = { 'x': 0, 'y': canvasHeight - 120},
     limit                       = {'xmin': 0, 'xmax': canvas.width() - 80, 'ymin': -40, 'ymax': 240},
@@ -63,14 +64,36 @@
                                         'x': context.x,
                                         'y': context.y
                                     },
-                                    this.url    = context.url
-                                    this.move   = false;
+                                    this.lastWhere = {
+                                        'x': context.x,
+                                        'y': context.y
+                                    },
+                                    this.url    = context.url,
+                                    this.move   = false,
+                                    this.update = function(){
+                                        if (this.where.x < limit.xmin){
+                                            this.where.x = limit.xmin;
+                                        }else if (this.where.x > limit.xmax){
+                                            this.where.x = limit.xmax;
+                                        }else if (this.where.y < limit.ymin){
+                                            this.where.y = limit.ymin;
+                                        }else if (this.where.y > limit.ymax){
+                                            this.where.y = limit.ymax;
+                                        }
+                                        if (gametab[this.where.y] && gametab[this.where.y][this.where.x] && gametab[this.where.y][this.where.x].type == 'decor') {
+                                            this.where.y = this.lastWhere.y;
+                                            this.where.x = this.lastWhere.x;
+                                            //console.log(gametab[this.where.y][this.where.x]);
+                                        }
+                                    };
                                 },
     resize      = (function(){
         $('#canvas').css({ position: 'relative', top: $(document).height() / 1.4 - canvas.height()});
     });
     makego      = function(name, type, image){
-        return new Gameobject(name, type, image);
+        var object = new Gameobject(name, type, image);
+        entities.push(object);
+        return object;
     },
     isLoad      = (function(){
         var i,
@@ -119,8 +142,16 @@
             }
         }
     },
+    update = function(){
+        var i, len;
+
+        for (i = 0, len = entities.length; i < len; i = i + 1){
+            entities[i].update();
+        }
+    }
     init = function(){
         context.clearRect(0, 0, canvas.width(), canvas.height());
+        update();
         drawToCanvas();
     },
     movemob = function(){
@@ -142,7 +173,7 @@
     },
     hit = function(movable){
         var here = gametab[movable.where.y][movable.where.x];
-        console.log(here, here.type, movable.type);
+        //console.log(here, here.type, movable.type);
         if (here != 1 && here.type === 'me' && movable.type === 'enemy'){
             console.log(movable, here);
         }
@@ -159,13 +190,15 @@
         block = 20,
         c = $('#wrap_canvas');
 
-        if (movable.move === true) { return false; }
+        if (movable == undefined || movable.move === true) { return false; }
         if (key < 37 || key > 40) { return false; }
         if ( movable.where.y < limit.ymin || movable.where.y > limit.ymax) { return false; }
         if ( movable.where.x < limit.xmin || movable.where.x > limit.xmax) { return false; }
         gametab[movable.where.y][movable.where.x] = 1;
-        if (key === 37 && gametab[movable.where.y][movable.where.x - sizeSprite] && gametab[movable.where.y][movable.where.x - sizeSprite].type !== 'decor'){
+        if (key === 37){
             movable.move = true;
+            movable.lastWhere.x = movable.where.x;
+            movable.lastWhere.y = movable.where.y;
             move = setInterval(function(){
                 movable.where.x -= speedMove;
                 init();
@@ -177,8 +210,10 @@
                 }
             }, frame);
         }
-        else if (key === 38 && gametab[movable.where.y - 40][movable.where.x]  && gametab[movable.where.y - 40][movable.where.x].type !== 'decor'){
+        else if (key === 38){
             movable.move = true;
+            movable.lastWhere.x = movable.where.x;
+            movable.lastWhere.y = movable.where.y;
             move = setInterval(function(){
                 movable.where.y -= speedMove / 2;
                 init();
@@ -190,8 +225,10 @@
                 }
             }, frame);
         }
-        else if (key === 39 && gametab[movable.where.y][movable.where.x + sizeSprite] && gametab[movable.where.y][movable.where.x + sizeSprite].type !== 'decor'){
+        else if (key === 39){
             movable.move = true;
+            movable.lastWhere.x = movable.where.x;
+            movable.lastWhere.y = movable.where.y;
             move = setInterval(function(){
                 movable.where.x += speedMove;
                 init();
@@ -203,8 +240,10 @@
                 }
             }, frame);
         }
-        else if (key === 40 && gametab[movable.where.y + 40][movable.where.x] && gametab[movable.where.y + 40][movable.where.x].type !== 'decor'){
+        else if (key === 40){
             movable.move = true;
+            movable.lastWhere.x = movable.where.x;
+            movable.lastWhere.y = movable.where.y;
             move = setInterval(function(){
                 movable.where.y += speedMove / 2;
                 init();
@@ -271,6 +310,11 @@
     mobs.push(makego('mobbug', 'enemy', {image: images.mobbug, x: 880, y: canvasHeight - 360}));
     mobs.push(makego('mobbug', 'enemy', {image: images.mobbug, x: 400, y: canvasHeight - 360}));
     mobs.push(makego('mobbug', 'enemy', {image: images.mobbug, x: 160, y: canvasHeight - 120}));
+
+    /**
+     *  Stock objects
+     */
+
     /**
      * Create Scene
      */
