@@ -17,11 +17,12 @@
     gameLoop,
     space,
     me,
-    inmove = false,
+    inmove                      = false,
     speedMove                   = 4,
     frame                       = 1000 / 60,
     scene                       = [],
     scenes                      = [],
+    mobs                        = [],
     gametab                     = {},
     here                        = { 'x': 0, 'y': canvasHeight - 120},
     limit                       = {'xmin': 0, 'xmax': canvas.width() - 80, 'ymin': -40, 'ymax': 240},
@@ -63,6 +64,7 @@
                                         'y': context.y
                                     },
                                     this.url    = context.url
+                                    this.move   = false;
                                 },
     resize      = (function(){
         $('#canvas').css({ position: 'relative', top: $(document).height() / 1.4 - canvas.height()});
@@ -121,6 +123,11 @@
         context.clearRect(0, 0, canvas.width(), canvas.height());
         drawToCanvas();
     },
+    movemob = function(){
+        for (i = 0, len = mobs.length; i < len; i = i + 1){
+            moveornot(mobs[i]);
+        }
+    },
     isLink = function(){
         if(gametab[me.where.y][me.where.x] &&  gametab[me.where.y][me.where.x] instanceof Gameobject && gametab[me.where.y][me.where.x].type === 'link'){
             setTimeout(function(){
@@ -133,67 +140,84 @@
         }
 
     },
+    hit = function(movable){
+        var here = gametab[movable.where.y][movable.where.x];
+        console.log(here, here.type, movable.type);
+        if (here != 1 && here.type === 'me' && movable.type === 'enemy'){
+            console.log(movable, here);
+        }
+        else if (here != 1 && here.type === 'enemy' && movable.type === 'me'){
+            console.log(movable, here);
+        }
+    },
     moveornot = function(evt){
-        var key = evt.keyCode,
+        var key = evt && evt.keyCode ? evt.keyCode : Math.floor((Math.random() * (40 - 37 + 1)) + 37),
+        movable = evt && evt.keyCode ? me : evt,
         move = null,
+        inmove = false,
         stop = 0,
-        block = 20;
+        block = 20,
         c = $('#wrap_canvas');
-        gametab[me.where.y][me.where.x] = 1;
-        if (inmove === true) { return false; }
-        if (key === 37 && me.where.x > limit.xmin && gametab[me.where.y][me.where.x - sizeSprite].type !== 'decor'){
-            inmove = true;
+
+        if (movable.move === true) { return false; }
+        if (key < 37 || key > 40) { return false; }
+        if ( movable.where.y < limit.ymin || movable.where.y > limit.ymax) { return false; }
+        if ( movable.where.x < limit.xmin || movable.where.x > limit.xmax) { return false; }
+        gametab[movable.where.y][movable.where.x] = 1;
+        if (key === 37 && gametab[movable.where.y][movable.where.x - sizeSprite] && gametab[movable.where.y][movable.where.x - sizeSprite].type !== 'decor'){
+            movable.move = true;
             move = setInterval(function(){
-                me.where.x -= speedMove;
+                movable.where.x -= speedMove;
                 init();
                 isLink();
                 stop = stop + 1;
                 if (stop >= block){
                     clearInterval(move);
-                    inmove = false;
+                    movable.move = false;
                 }
             }, frame);
         }
-        else if (key === 38 && me.where.y > limit.ymin && gametab[me.where.y - 40][me.where.x].type !== 'decor'){
-            inmove = true;
+        else if (key === 38 && gametab[movable.where.y - 40][movable.where.x]  && gametab[movable.where.y - 40][movable.where.x].type !== 'decor'){
+            movable.move = true;
             move = setInterval(function(){
-                me.where.y -= speedMove / 2;
+                movable.where.y -= speedMove / 2;
                 init();
                 isLink();
                 stop = stop + 1;
                 if (stop >= block){
                     clearInterval(move);
-                    inmove = false;
+                    movable.move = false;
                 }
             }, frame);
         }
-        else if (key === 39 && me.where.x < limit.xmax && gametab[me.where.y][me.where.x + sizeSprite].type !== 'decor'){
-            inmove = true;
+        else if (key === 39 && gametab[movable.where.y][movable.where.x + sizeSprite] && gametab[movable.where.y][movable.where.x + sizeSprite].type !== 'decor'){
+            movable.move = true;
             move = setInterval(function(){
-                me.where.x += speedMove;
+                movable.where.x += speedMove;
                 init();
                 isLink();
                 stop = stop + 1;
                 if (stop >= block){
                     clearInterval(move);
-                    inmove = false;
+                    movable.move = false;
                 }
             }, frame);
         }
-        else if (key === 40 && me.where.y < limit.ymax && gametab[me.where.y + 40][me.where.x].type !== 'decor'){
-            inmove = true;
+        else if (key === 40 && gametab[movable.where.y + 40][movable.where.x] && gametab[movable.where.y + 40][movable.where.x].type !== 'decor'){
+            movable.move = true;
             move = setInterval(function(){
-                me.where.y += speedMove / 2;
+                movable.where.y += speedMove / 2;
                 init();
                 isLink();
                 stop = stop + 1;
                 if (stop >= block){
                     clearInterval(move);
-                    inmove = false;
+                    movable.move = false;
                 }
             }, frame);
         }
-        gametab[me.where.y][me.where.x] = me;
+        hit(movable);
+        gametab[movable.where.y][movable.where.x] = movable;
         init();
     };
 
@@ -242,14 +266,19 @@
     me = makego('lainnie', 'me', {image:images.me, x:0, y:canvasHeight - 120});
 
     /**
+     * Create mob
+     */
+    mobs.push(makego('mobbug', 'enemy', {image: images.mobbug, x: 880, y: canvasHeight - 360}));
+    mobs.push(makego('mobbug', 'enemy', {image: images.mobbug, x: 400, y: canvasHeight - 360}));
+    mobs.push(makego('mobbug', 'enemy', {image: images.mobbug, x: 160, y: canvasHeight - 120}));
+    /**
      * Create Scene
      */
     scene.push(['', '', '', '', '', '', '', '', '', '', '', '', '', '']);
     scene.push(['', '', '',
                 makego('rock', 'decor', {image: images.rock}),
-                makego('mobbug', 'enemy', {image: images.mobbug}), '', '', '', '', '', '', '', '', '']);
-    scene.push(['', '', '',
-                makego('mobbug', 'enemy', {image: images.mobbug}), '', '', '',
+                mobs[0], mobs[1], mobs[2], '', '', '', '', '', '', '']);
+    scene.push(['', '', '', '', '', '', '',
                 makego('windowtall', 'decor', {image: images.windowtall}),
                 makego('selector', 'link', {image: images.selector, url: '/work'}),
                 makego('windowtall', 'decor', {image: images.windowtall}), '', '', '', '']);
@@ -322,18 +351,19 @@
                 $(window).bind('resize', resize);
                 gameLoop = setInterval(init);
                 co.fadeToggle(speed, function(){
-                ca.fadeToggle(speed);
+                    ca.fadeToggle(speed);
             });
             }else{
                 $(document).unbind('keyup', moveornot);
                 $(window).unbind('resize', resize);
                 clearInterval(gameLoop);
                 ca.fadeToggle(speed, function(){
-                co.fadeToggle(speed);
+                    co.fadeToggle(speed);
             });
             }
         }
     });
+    setInterval(movemob, 500);
     $(document).bind('keyup', moveornot);
     $(window).bind('resize', resize);
 })();
