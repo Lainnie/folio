@@ -18,7 +18,7 @@
     space,
     me,
     inmove                      = false,
-    speedMove                   = 4,
+    speedMove                   = 8,
     frame                       = 1000 / 60,
     scene                       = [],
     scenes                      = [],
@@ -187,7 +187,7 @@
         move = null,
         inmove = false,
         stop = 0,
-        block = 20,
+        block = 10,
         c = $('#wrap_canvas');
 
         if (movable == undefined || movable.move === true) { return false; }
