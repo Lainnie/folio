@@ -1,6 +1,6 @@
 (function(){
 
-    "use_strict";
+    "use strict";
 
     var canvas  = $('#canvas'),
     sizeDoc,
@@ -50,7 +50,7 @@
             'decor':            'decor',
             'mob':              'mob',
             'me':               'me'
-    }
+    },
     gameobjects                 = {
     },
     Gameobject                  =   function(name, type, context){
@@ -89,7 +89,7 @@
                                 },
     resize      = (function(){
         $('#canvas').css({ position: 'relative', top: $(document).height() / 1.4 - canvas.height()});
-    });
+    }),
     makego      = function(name, type, image){
         var object = new Gameobject(name, type, image);
         entities.push(object);
@@ -148,14 +148,14 @@
         for (i = 0, len = entities.length; i < len; i = i + 1){
             entities[i].update();
         }
-    }
+    },
     init = function(){
         context.clearRect(0, 0, canvas.width(), canvas.height());
         update();
         drawToCanvas();
     },
     movemob = function(){
-        for (i = 0, len = mobs.length; i < len; i = i + 1){
+        for (var i = 0, len = mobs.length; i < len; i = i + 1){
             moveornot(mobs[i]);
         }
     },
